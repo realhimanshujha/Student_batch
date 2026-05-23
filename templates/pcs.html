@@ -1,0 +1,99 @@
+<link
+rel="stylesheet"
+
+href="{{url_for(
+'static',
+filename='style.css'
+)}}">
+
+<h1>
+
+Computer Occupancy
+
+</h1>
+
+<a
+href="/"
+class="dashboard-btn">
+
+🏠 Dashboard
+
+</a>
+
+<hr>
+
+{% for batch in data %}
+
+<h2>
+
+{{batch.batch}}
+
+</h2>
+
+<div
+
+style="
+
+display:flex;
+
+gap:20px;
+
+flex-wrap:wrap;
+
+margin-bottom:30px;
+
+"
+
+>
+
+{% for pc in batch.pcs %}
+
+<div
+
+style="
+
+padding:18px;
+
+border-radius:14px;
+
+width:140px;
+
+text-align:center;
+
+background:
+{{ '#2ecc71' if pc.free else '#e74c3c' }};
+
+color:white;
+
+font-weight:bold;
+
+font-size:18px;
+
+box-shadow:
+0px 4px 10px rgba(0,0,0,0.2);
+
+"
+
+>
+
+💻 PC {{pc.pc}}
+
+<br><br>
+
+{% if pc.free %}
+
+Available
+
+{% else %}
+
+{{pc.name}}
+
+{% endif %}
+
+</div>
+
+{% endfor %}
+
+</div>
+
+{% endfor %}

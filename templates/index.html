@@ -1,0 +1,414 @@
+<link
+rel="stylesheet"
+
+href="{{url_for(
+'static',
+filename='style.css'
+)}}">
+<h1>Institute Dashboard</h1>
+
+<div class="top-actions">
+
+<a href="/logout" class="logout-btn">
+
+🚪 Logout
+
+</a>
+
+<a href="/pcs" class="nav-btn">
+
+💻 PC Status
+
+</a>
+
+<a href="/calendar" class="nav-btn">
+
+📅 Calendar
+
+</a>
+
+</div>
+
+
+<div
+style="display:flex;
+gap:20px;">
+
+<div
+style="border:1px solid black;
+padding:10px;">
+
+Total Students
+
+<h2>
+
+{{total_students}}
+
+</h2>
+
+</div>
+
+<div
+style="border:1px solid black;
+padding:10px;">
+
+Active Batches
+
+<h2>
+
+{{active_batches}}
+
+</h2>
+
+</div>
+
+<div
+style="border:1px solid black;
+padding:10px;">
+
+MWF Seats
+
+<h2>
+
+{{mwf_left}}
+
+</h2>
+
+</div>
+
+<div
+style="
+border:1px solid black;
+padding:10px;
+">
+
+TTS Seats
+
+<h2>
+
+{{tts_left}}
+
+</h2>
+
+</div>
+
+<div
+style="
+border:1px solid black;
+padding:10px;
+">
+
+Total Capacity
+
+<h2>
+
+{{total_left}}
+
+</h2>
+
+</div>
+
+</div>
+
+<br>
+
+<a
+href="/add"
+class="big-btn">
+
+➕ Add Student
+
+</a>
+
+<form>
+
+<input
+
+name="search"
+
+placeholder=
+
+"Search Student / Course"
+
+value=
+
+"{{request.args.get('search','')}}"
+
+>
+
+<button>
+
+Search
+
+</button>
+
+</form>
+
+<br>
+
+<hr>
+<div
+style="
+display:flex;
+gap:25px;
+align-items:flex-start;
+margin-top:25px;
+flex-wrap:wrap;
+">
+
+
+
+
+<!-- MWF -->
+
+<div
+class="table-box"
+style="flex:1;min-width:500px;">
+
+<h2>
+
+📅 MWF Students
+
+</h2>
+
+<table>
+
+<tr>
+
+<th>Name</th>
+
+<th>Course</th>
+
+<th>Batch</th>
+
+<th>PC</th>
+
+<th>Action</th>
+
+</tr>
+
+{% for s in students %}
+
+{% if
+"Monday" in s.days
+and
+"Wednesday" in s.days
+and
+"Friday" in s.days
+and
+"Tuesday" not in s.days
+%}
+
+<tr>
+
+<td>{{s.name}}</td>
+
+<td>{{s.course}}</td>
+
+<td>{{s.batch_time}}</td>
+
+<td>PC {{s.computer_no}}</td>
+
+<td>
+
+<div
+class="action-buttons">
+
+<a
+class="edit-btn"
+href="/edit/{{s.id}}">
+
+✏ Edit
+
+</a>
+
+<a
+class="delete-btn"
+href="/delete/{{s.id}}">
+
+🗑 Delete
+
+</a>
+
+</div>
+
+</td>
+
+</tr>
+
+{% endif %}
+
+{% endfor %}
+
+</table>
+
+</div>
+
+
+<!-- TTS -->
+
+
+<div
+class="table-box"
+style="flex:1;min-width:500px;">
+
+<h2>
+
+📅 TTS Students
+
+</h2>
+
+<table>
+
+<tr>
+
+<th>Name</th>
+
+<th>Course</th>
+
+<th>Batch</th>
+
+<th>PC</th>
+
+<th>Action</th>
+
+</tr>
+
+{% for s in students %}
+
+{% if
+"Tuesday" in s.days
+and
+"Thursday" in s.days
+and
+"Saturday" in s.days
+and
+"Monday" not in s.days
+%}
+
+<tr>
+
+<td>{{s.name}}</td>
+
+<td>{{s.course}}</td>
+
+<td>{{s.batch_time}}</td>
+
+<td>PC {{s.computer_no}}</td>
+
+<td>
+
+<div
+class="action-buttons">
+
+<a
+class="edit-btn"
+href="/edit/{{s.id}}">
+
+✏ Edit
+
+</a>
+
+<a
+class="delete-btn"
+href="/delete/{{s.id}}">
+
+🗑 Delete
+
+</a>
+
+</div>
+
+</td>
+
+</tr>
+
+{% endif %}
+
+{% endfor %}
+
+</table>
+
+</div>
+
+</div>
+
+<div
+class="table-box"
+style="margin-top:25px;">
+
+<h2>
+
+⚡ Daily Students
+
+</h2>
+
+<table>
+
+<tr>
+
+<th>Name</th>
+
+<th>Course</th>
+
+<th>Batch</th>
+
+<th>PC</th>
+
+<th>Action</th>
+
+</tr>
+
+{% for s in students %}
+
+{% if
+"Monday" in s.days
+and
+"Tuesday" in s.days
+%}
+
+<tr>
+
+<td>{{s.name}}</td>
+
+<td>{{s.course}}</td>
+
+<td>{{s.batch_time}}</td>
+
+<td>PC {{s.computer_no}}</td>
+
+<td>
+
+<div
+class="action-buttons">
+
+<a
+class="edit-btn"
+href="/edit/{{s.id}}">
+
+✏ Edit
+
+</a>
+
+<a
+class="delete-btn"
+href="/delete/{{s.id}}">
+
+🗑 Delete
+
+</a>
+
+</div>
+
+</td>
+
+</tr>
+
+{% endif %}
+
+{% endfor %}
+
+</table>
+
+</div>
+

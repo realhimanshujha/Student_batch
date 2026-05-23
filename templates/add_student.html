@@ -1,0 +1,256 @@
+<link
+rel="stylesheet"
+href="{{url_for(
+'static',
+filename='style.css'
+)}}">
+
+<div class="page-center">
+
+<div class="student-card">
+
+<h1>Add Student</h1>
+
+<form method="POST">
+
+<div class="input-group">
+
+<label>Name</label>
+
+<input
+name="name"
+required>
+
+</div>
+
+<div class="input-group">
+
+<label>Course</label>
+
+<input
+name="course"
+required>
+
+</div>
+
+<div class="input-group">
+
+<label>Select Schedule</label>
+
+<div class="schedule-container">
+
+<label class="schedule-item">
+
+<input
+type="radio"
+name="schedule"
+value="mwf"
+onclick="setDays()">
+
+📅 Monday • Wednesday • Friday
+
+</label>
+
+<label class="schedule-item">
+
+<input
+type="radio"
+name="schedule"
+value="tts"
+onclick="setDays()">
+
+📅 Tuesday • Thursday • Saturday
+
+</label>
+
+<label class="schedule-item">
+
+<input
+type="radio"
+name="schedule"
+value="daily"
+onclick="setDays()">
+
+⚡ All Day
+
+</label>
+
+</div>
+
+</div>
+
+<input
+hidden
+name="days"
+id="days">
+
+<button
+type="submit">
+
+Check Availability
+
+</button>
+
+</form>
+
+
+{% if available %}
+
+<div class="availability-card">
+
+<h2>
+
+Available Batches
+
+</h2>
+
+{% for a in available %}
+
+<div class="batch-card">
+
+<h3>
+
+🕒 {{a.batch}}
+
+</h3>
+
+<div class="pc-list">
+
+{% for p in a.pcs %}
+
+<form method="POST">
+
+<input
+hidden
+name="name"
+value="{{request.form.name}}">
+
+<input
+hidden
+name="course"
+value="{{request.form.course}}">
+
+<input
+hidden
+name="days"
+value="{{request.form.days}}">
+
+<input
+hidden
+name="batch"
+value="{{a.batch}}">
+
+<input
+hidden
+name="pc"
+value="{{p}}">
+
+<button
+class="pc-btn">
+
+PC {{p}}
+
+Assign
+
+</button>
+
+</form>
+
+{% endfor %}
+
+</div>
+
+</div>
+
+{% endfor %}
+
+</div>
+
+{% endif %}
+
+</div>
+
+</div>
+
+<script>
+
+function setDays(){
+
+let selected=
+
+document.querySelector(
+
+'input[name="schedule"]:checked'
+
+)
+
+if(!selected)return
+
+let value=
+
+selected.value
+
+let days=[]
+
+if(
+
+value=="mwf"
+
+){
+
+days=[
+
+"Monday",
+"Wednesday",
+"Friday"
+
+]
+
+}
+
+else if(
+
+value=="tts"
+
+){
+
+days=[
+
+"Tuesday",
+"Thursday",
+"Saturday"
+
+]
+
+}
+
+else{
+
+days=[
+
+"Monday",
+"Tuesday",
+"Wednesday",
+"Thursday",
+"Friday",
+"Saturday"
+
+]
+
+}
+
+document
+
+.getElementById(
+
+"days"
+
+)
+
+.value=
+
+days.join(",")
+
+}
+
+</script>

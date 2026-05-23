@@ -1,0 +1,75 @@
+<link
+rel="stylesheet"
+
+href="{{url_for(
+'static',
+filename='style.css'
+)}}">
+
+<h1>
+
+Institute Calendar
+
+</h1>
+
+<a
+href="/"
+class="dashboard-btn">
+
+🏠 Dashboard
+
+</a>
+
+<hr>
+
+{% for day,students in days.items() %}
+
+<h2>
+
+📅 {{day}}
+
+</h2>
+
+<table border="1">
+
+<tr>
+
+<th>Time</th>
+
+<th>Name</th>
+
+<th>PC</th>
+
+</tr>
+
+{% for s in students %}
+
+<tr>
+
+<td>
+
+{{s.batch_time}}
+
+</td>
+
+<td>
+
+{{s.name}}
+
+</td>
+
+<td>
+
+PC {{s.computer_no}}
+
+</td>
+
+</tr>
+
+{% endfor %}
+
+</table>
+
+<br>
+
+{% endfor %}
