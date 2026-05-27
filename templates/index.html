@@ -7,25 +7,45 @@ filename='style.css'
 )}}">
 <h1>Institute Dashboard</h1>
 
-<div class="top-actions">
+<div class="menu-container">
 
-<a href="/logout" class="logout-btn">
+<button
+class="menu-btn"
+onclick="toggleMenu()">
 
-🚪 Logout
+☰ Menu
+
+</button>
+
+<div
+id="dropdown"
+class="dropdown-menu">
+
+<a href="/add">
+
+➕ Add Student
 
 </a>
 
-<a href="/pcs" class="nav-btn">
+<a href="/pcs">
 
 💻 PC Status
 
 </a>
 
-<a href="/calendar" class="nav-btn">
+<a href="/calendar">
 
 📅 Calendar
 
 </a>
+
+<a href="/logout">
+
+🚪 Logout
+
+</a>
+
+</div>
 
 </div>
 
@@ -112,13 +132,6 @@ Total Capacity
 
 <br>
 
-<a
-href="/add"
-class="big-btn">
-
-➕ Add Student
-
-</a>
 
 <form>
 
@@ -412,3 +425,37 @@ href="/delete/{{s.id}}">
 
 </div>
 
+<script>
+
+function toggleMenu(){
+
+let menu=
+
+document.getElementById(
+"dropdown"
+)
+
+if(
+
+menu.style.display
+=="block"
+
+){
+
+menu.style.display=
+
+"none"
+
+}
+
+else{
+
+menu.style.display=
+
+"block"
+
+}
+
+}
+
+</script>

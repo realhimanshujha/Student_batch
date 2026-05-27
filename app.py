@@ -1,8 +1,10 @@
 from flask import Flask,render_template,request,redirect,session
 import sqlite3
 from datetime import datetime
+import requests
 
 app=Flask(__name__)
+SHEET_API="https://script.google.com/macros/s/AKfycbz-L2LCsEuqzUCvZ5mFMbArj6luGKHGpZs3XXHDCkHPEvU-hOzqToiPoHSDPUcjb1BkGg/exec"
 app.secret_key="vistaeducare123"
 
 def db():
@@ -126,16 +128,19 @@ def logout():
 
 @app.route("/pcs")
 
-
 def pcs():
 
     if "user" not in session:
 
         return redirect("/login")
 
-    conn=db()
+    students=requests.get(
 
-    today = datetime.now().strftime("%A")
+    SHEET_API
+
+    ).json()
+
+    today=datetime.now().strftime("%A")
 
     data=[]
 
@@ -145,41 +150,47 @@ def pcs():
 
         for pc in range(1,6):
 
-            row=conn.execute("""
+            found=None
 
-            SELECT s.name
+            for s in students:
 
-            FROM students s
+                days=[
 
-            JOIN schedules sc
+                d.strip()
 
-            ON s.id=sc.student_id
+                for d in
 
-            WHERE
+                s["Days"].split(",")
 
-            s.batch_time=?
-            AND s.computer_no=?
-            AND sc.day=?
+                ]
 
-            """,
+                if(
 
-            (
+                s["Batch"]==batch
 
-            batch,
-            pc,
-            today
+                and
 
-            )
+                int(s["PC"])==pc
 
-            ).fetchone()
+                and
 
-            if row:
+                today in days
+
+                ):
+
+                    found=s
+
+                    break
+
+            if found:
 
                 pcs.append({
 
                 "pc":pc,
 
-                "name":row["name"],
+                "name":
+
+                found["Name"],
 
                 "free":False
 
@@ -203,8 +214,6 @@ def pcs():
 
         })
 
-    conn.close()
-
     return render_template(
 
     "pcs.html",
@@ -212,7 +221,6 @@ def pcs():
     data=data
 
     )
-
 
 @app.route("/calendar")
 
@@ -222,28 +230,11 @@ def calendar():
 
         return redirect("/login")
 
-    conn=db()
+    students=requests.get(
 
-    rows=conn.execute("""
+    SHEET_API
 
-    SELECT
-
-    s.name,
-    s.batch_time,
-    s.computer_no,
-    sc.day
-
-    FROM students s
-
-    JOIN schedules sc
-
-    ON s.id=sc.student_id
-
-    ORDER BY day,batch_time
-
-    """).fetchall()
-
-    conn.close()
+    ).json()
 
     days={
 
@@ -261,11 +252,37 @@ def calendar():
 
     }
 
-    for r in rows:
+    for s in students:
 
-        days[
-        r["day"]
-        ].append(r)
+        student_days=[
+
+        x.strip()
+
+        for x in
+
+        s["Days"].split(",")
+
+        ]
+
+        for d in student_days:
+
+            if d in days:
+
+                days[d].append({
+
+                "name":
+
+                s["Name"],
+
+                "batch_time":
+
+                s["Batch"],
+
+                "computer_no":
+
+                s["PC"]
+
+                })
 
     return render_template(
 
@@ -284,67 +301,30 @@ def home():
 
         return redirect("/login")
 
-    conn=db()
-
     search=request.args.get(
     "search",
     ""
     )
 
-    students=conn.execute("""
+    students= requests.get(
 
-    SELECT
+    SHEET_API
 
-    s.id,
-    s.name,
-    s.course,
-    s.batch_time,
-    s.computer_no,
+    ).json()
 
-    GROUP_CONCAT(
+    for s in students:
 
-    CASE sc.day
+        s["id"]=students.index(s)+1
 
-    WHEN 'Monday' THEN '1-Monday'
-    WHEN 'Tuesday' THEN '2-Tuesday'
-    WHEN 'Wednesday' THEN '3-Wednesday'
-    WHEN 'Thursday' THEN '4-Thursday'
-    WHEN 'Friday' THEN '5-Friday'
-    WHEN 'Saturday' THEN '6-Saturday'
+        s["batch_time"]=s["Batch"]
 
-    END,
+        s["computer_no"]=s["PC"]
 
-    ', '
+        s["course"]=s["Course"]
 
-    ) days
+        s["name"]=s["Name"]
 
-    FROM students s
-
-    LEFT JOIN schedules sc
-
-    ON s.id=sc.student_id
-
-    WHERE
-
-    s.name LIKE ?
-
-    OR
-
-    s.course LIKE ?
-
-    GROUP BY s.id
-
-    """,
-
-    (
-
-    f"%{search}%",
-
-    f"%{search}%"
-
-    )
-
-    ).fetchall()
+        s["days"]=s["Days"]
 
     batch_order={
 
@@ -472,19 +452,17 @@ def home():
 
     total_left = mwf_left + tts_left
 
-    active_batches=conn.execute("""
+    active_batches=len(
 
-    SELECT COUNT(
+    set(
 
-    DISTINCT batch_time
+    s["batch_time"]
+
+    for s in students
 
     )
 
-    FROM students
-
-    """).fetchone()[0]
-
-    conn.close()
+    )
 
     return render_template(
 
@@ -515,7 +493,15 @@ def edit(id):
 
         return redirect("/login")
 
-    conn=db()
+    students = requests.get(
+
+    SHEET_API
+
+    ).json()
+
+    student = students[id-1]
+
+    current = student["Days"].split(",")
 
     if request.method=="POST":
 
@@ -529,130 +515,67 @@ def edit(id):
 
         days=request.form["days"]
 
-        days=days.split(",")
+        requests.post(
 
-        conn.execute("""
+        SHEET_API,
 
-        UPDATE students
+        json={
 
-        SET
+        "action":"update",
 
-        name=?,
-        course=?,
-        batch_time=?,
-        computer_no=?
+        "row":
 
-        WHERE id=?
+        student["row"],
 
-        """,
-
-        (
+        "name":
 
         name,
+
+        "course":
+
         course,
+
+        "batch":
+
         batch,
+
+        "pc":
+
         pc,
-        id
 
-        ))
+        "days":
 
-        conn.execute(
+        days
 
-        """
-
-        DELETE FROM schedules
-
-        WHERE student_id=?
-
-        """,
-
-        (id,)
+        }
 
         )
-
-        for d in days:
-
-            conn.execute(
-
-            """
-
-            INSERT INTO schedules(
-
-            student_id,
-            day
-
-            )
-
-            VALUES(?,?)
-
-            """,
-
-            (
-
-            id,
-            d.strip()
-
-            )
-
-            )
-
-        conn.commit()
-
-        conn.close()
 
         return redirect("/")
-
-
-
-    student=conn.execute("""
-
-    SELECT *
-
-    FROM students
-
-    WHERE id=?
-
-    """,
-
-    (id,)
-
-    ).fetchone()
-
-
-    rows=conn.execute("""
-
-    SELECT day
-
-    FROM schedules
-
-    WHERE student_id=?
-
-    """,
-
-    (id,)
-
-    ).fetchall()
-
-
-    current=[]
-
-    for r in rows:
-
-        current.append(
-
-        r["day"]
-
-        )
-
-
-    conn.close()
-
 
     return render_template(
 
     "edit.html",
 
-    student=student,
+    student={
+
+    "name":
+
+    student["Name"],
+
+    "course":
+
+    student["Course"],
+
+    "batch_time":
+
+    student["Batch"],
+
+    "computer_no":
+
+    student["PC"]
+
+    },
 
     current=current,
 
@@ -700,55 +623,25 @@ def add():
 
         if batch and pc:
 
-            cursor=conn.cursor()
+            requests.post(
 
-            cursor.execute("""
+            SHEET_API,
 
-            INSERT INTO students(
+            json={
 
-                name,
-                course,
-                batch_time,
-                computer_no
+            "name":name,
 
-                )
+            "course":course,
 
-                VALUES(?,?,?,?)
-            """,
+            "batch":batch,
 
-            (
+            "pc":pc,
 
-            name,
-            course,
-            batch,
-            pc
+            "days":",".join(days)
 
-            ))
+            }
 
-            sid=cursor.lastrowid
-
-            for d in days:
-
-                conn.execute(
-
-                """
-
-                INSERT INTO schedules(
-
-                student_id,
-                day
-
-                )
-
-                VALUES(?,?)
-
-                """,
-
-                (sid,d)
-
-                )
-
-            conn.commit()
+            )
 
             conn.close()
 
@@ -756,43 +649,31 @@ def add():
 
         else:
 
+            students = requests.get(
+
+            SHEET_API
+
+            ).json()
+
             for batch_time in batches:
 
                 used=set()
 
-                for d in days:
+                for student in students:
 
-                    rows=conn.execute("""
+                    student_days = student["Days"].split(",")
 
-                    SELECT computer_no
+                    if student["Batch"] == batch_time:
 
-                    FROM students s
+                        for d in days:
 
-                    JOIN schedules sc
+                            if d.strip() in student_days:
 
-                    ON s.id=sc.student_id
+                                used.add(
 
-                    WHERE
+                                    int(student["PC"])
 
-                    batch_time=?
-                    AND day=?
-
-                    """,
-
-                    (
-
-                    batch_time,
-                    d
-
-                    )).fetchall()
-
-                    for r in rows:
-
-                        used.add(
-
-                        r["computer_no"]
-
-                        )
+                                )
 
                 free=[]
 
@@ -823,38 +704,39 @@ def add():
     )
 
 
-@app.route("/delete/<int:id>")
+@app.route(
+"/delete/<int:id>"
+)
 
 def delete(id):
 
     if "user" not in session:
 
-        return redirect("/login")
+        return redirect(
+        "/login"
+        )
 
-    conn=db()
+    students=requests.get(
+    SHEET_API
+    ).json()
 
-    conn.execute(
+    row=students[
+    id-1
+    ]["row"]
 
-    "DELETE FROM schedules WHERE student_id=?",
+    requests.get(
 
-    (id,)
+    SHEET_API+
+
+    "?action=delete&row="+
+
+    str(row)
 
     )
 
-    conn.execute(
-
-    "DELETE FROM students WHERE id=?",
-
-    (id,)
-
+    return redirect(
+    "/"
     )
-
-    conn.commit()
-
-    conn.close()
-
-    return redirect("/")
-
 
 import os
 
