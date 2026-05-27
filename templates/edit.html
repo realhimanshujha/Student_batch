@@ -5,7 +5,13 @@ href="{{url_for(
 'static',
 filename='style.css'
 )}}">
-<h1>Edit Student</h1>
+<h1 class="edit-title">
+
+Edit Student
+
+</h1>
+
+<div class="edit-card">
 
 <form method="POST">
 
@@ -81,34 +87,48 @@ PC {{x}}
 
 <br><br>
 
-Days
+<div class="days-section">
 
-<br>
+<label>Days</label>
+
+<div class="schedule-options">
+
+<label class="schedule-card">
 
 <input
 type="radio"
 name="schedule"
 onclick="setMWF()">
 
-MWF
+<span>📅 MWF</span>
 
-<br>
+</label>
+
+<label class="schedule-card">
 
 <input
 type="radio"
 name="schedule"
 onclick="setTTS()">
 
-TTS
+<span>📅 TTS</span>
 
-<br>
+</label>
+
+<label class="schedule-card">
 
 <input
 type="radio"
 name="schedule"
 onclick="setDaily()">
 
-Daily
+<span>⚡ Daily</span>
+
+</label>
+
+</div>
+
+</div>
 
 <br><br>
 
@@ -124,6 +144,10 @@ Save
 </button>
 
 </form>
+
+</form>
+
+</div>
 
 
 <script>
