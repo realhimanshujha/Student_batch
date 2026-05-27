@@ -578,17 +578,40 @@ def edit(id):
 
     current = student["Days"].split(",")
 
+    old_batch=student["Batch"]
+
+    old_pc=student["PC"]
+
     if request.method=="POST":
 
+        old_course=student["Course"]
+        old_batch=student["Batch"]
+        old_pc=student["PC"]
+        old_days=student["Days"]
+
         name=request.form["name"]
-
         course=request.form["course"]
-
         batch=request.form["batch"]
-
         pc=request.form["pc"]
-
         days=request.form["days"]
+
+        session["popup"]={
+
+        "name":name,
+
+        "old_course":old_course,
+        "new_course":course,
+
+        "old_batch":old_batch,
+        "new_batch":batch,
+
+        "old_pc":old_pc,
+        "new_pc":pc,
+
+        "old_days":old_days,
+        "new_days":days
+
+        }
 
         requests.post(
 
@@ -625,6 +648,21 @@ def edit(id):
         }
 
         )
+
+        session["popup"]={
+
+        "name":name,
+
+        "old_batch":old_batch,
+        "new_batch":batch,
+
+        "old_pc":old_pc,
+        "new_pc":pc,
+
+        "old_days":old_days,
+        "new_days":days
+
+        }
 
         return redirect("/")
 

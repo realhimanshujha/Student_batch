@@ -545,7 +545,11 @@ onclick="confirmDelete(event,'{{s.id}}','{{s.name}}')"
 
 <div class="modal-box">
 
-<h2>⚠ Confirm Delete</h2>
+<h2 id="modalTitle">
+
+⚠ Confirm Delete
+
+</h2>
 
 <p id="studentText"></p>
 
@@ -572,6 +576,109 @@ Delete
 </div>
 
 </div>
+
+
+{% if session.get("popup") %}
+
+<script>
+
+window.onload=function(){
+
+let data={{session.pop("popup")|tojson}}
+
+if(!data){
+
+return
+
+}
+
+let msg=""
+
+if(data.old_course!=data.new_course){
+
+msg+=
+"Course:<br>"+
+data.old_course+
+" → "+
+data.new_course+
+"<br><br>"
+
+}
+
+if(data.old_batch!=data.new_batch){
+
+msg+=
+"Batch:<br>"+
+data.old_batch+
+" → "+
+data.new_batch+
+"<br><br>"
+
+}
+
+if(String(data.old_pc)!=String(data.new_pc)){
+
+msg+=
+"PC:<br>PC "+
+data.old_pc+
+" → PC "+
+data.new_pc+
+"<br><br>"
+
+}
+
+if(data.old_days!=data.new_days){
+
+msg+=
+"Days:<br>"+
+data.old_days+
+" → "+
+data.new_days+
+"<br><br>"
+
+}
+
+document.getElementById(
+"modalTitle"
+).innerHTML=
+
+"✅ Student Updated"
+
+document.getElementById(
+"studentText"
+).innerHTML=
+
+"Changing <b>"+
+data.name+
+"</b><br><br>"+
+msg
+
+document.getElementById(
+"deleteLink"
+).innerText="OK"
+
+document.querySelector(
+".cancel-btn"
+).style.display="none"
+
+document.getElementById(
+"deleteLink"
+).onclick=function(){
+
+closeModal()
+
+}
+
+document.getElementById(
+"deleteModal"
+).style.display="flex"
+
+}
+
+</script>
+
+{% endif %}
+
 
 <script>
 
@@ -687,7 +794,33 @@ document.getElementById(
 
 "deleteModal"
 
-).style.display="none"
+).style.display=
+
+"none"
+
+document.getElementById(
+
+"modalTitle"
+
+).innerHTML=
+
+"⚠ Confirm Delete"
+
+document.getElementById(
+
+"deleteLink"
+
+).innerText=
+
+"Delete"
+
+document.querySelector(
+
+".cancel-btn"
+
+).style.display=
+
+"inline-block"
 
 }
 
