@@ -2836,3 +2836,179 @@ scale(1);
 }
 
 }
+
+.today-card{
+
+padding:15px;
+
+border-radius:18px;
+
+border:
+
+2px solid #8b5cf6;
+
+box-shadow:
+
+0 0 18px #8b5cf6,
+
+0 0 35px rgba(
+
+139,
+
+92,
+
+246,
+
+0.5
+
+);
+
+background:
+
+rgba(
+
+139,
+
+92,
+
+246,
+
+0.08
+
+);
+
+animation:
+
+pulseDay
+
+2s infinite;
+
+margin-bottom:25px;
+
+}
+
+@keyframes pulseDay{
+
+0%{
+
+box-shadow:
+
+0 0 10px #8b5cf6;
+
+}
+
+50%{
+
+box-shadow:
+
+0 0 28px #8b5cf6;
+
+}
+
+100%{
+
+box-shadow:
+
+0 0 10px #8b5cf6;
+
+}
+
+}
+
+/* Occupied PC Glow */
+
+@keyframes occupiedGlow{
+
+0%{
+
+box-shadow:
+0 0 10px #ff4d4d;
+
+}
+
+50%{
+
+box-shadow:
+0 0 28px #ff0000;
+
+}
+
+100%{
+
+box-shadow:
+0 0 10px #ff4d4d;
+
+}
+
+}
+
+/* Available PC Glow */
+
+@keyframes freeGlow{
+
+0%{
+
+box-shadow:
+0 0 10px #2ecc71;
+
+}
+
+50%{
+
+box-shadow:
+0 0 28px #00ff88;
+
+}
+
+100%{
+
+box-shadow:
+0 0 10px #2ecc71;
+
+}
+
+}
+
+.pc-card{
+
+padding:18px;
+
+border-radius:18px;
+
+width:140px;
+
+text-align:center;
+
+color:white;
+
+font-weight:bold;
+
+font-size:18px;
+
+transition:.3s;
+
+cursor:pointer;
+
+}
+
+.pc-card:hover{
+
+transform:
+translateY(-6px)
+scale(1.05);
+
+}
+
+.free{
+
+animation:
+freeGlow 2s infinite;
+
+}
+
+.occupied{
+
+animation:
+occupiedGlow 2s infinite;
+
+}

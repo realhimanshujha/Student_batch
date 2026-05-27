@@ -236,6 +236,48 @@ def calendar():
 
     ).json()
 
+    batch_order={
+
+    "8:00-9:30":1,
+
+    "9:30-11:00":2,
+
+    "11:00-12:30":3,
+
+    "12:30-2:00":4,
+
+    "2:00-3:30":5,
+
+    "3:30-5:00":6,
+
+    "5:00-6:30":7
+
+    }
+
+    students=sorted(
+
+    students,
+
+    key=lambda s:(
+
+    batch_order.get(
+
+    s["Batch"],
+
+    999
+
+    ),
+
+    int(
+
+    s["PC"]
+
+    )
+
+    )
+
+    )
+
     days={
 
     "Monday":[],
@@ -284,27 +326,42 @@ def calendar():
 
                 })
 
+    today= datetime.now().strftime(
+
+    "%A"
+
+    )
+
     return render_template(
 
     "calendar.html",
 
-    days=days
+    days=days,
+
+    current_day=today
 
     )
 
 
 
-@app.route("/")
+@app.route("/",methods=["GET","POST"])
+
 def home():
 
     if "user" not in session:
 
         return redirect("/login")
 
-    search=request.args.get(
-    "search",
-    ""
-    )
+    if request.method=="POST":
+
+        search=request.form.get(
+        "search",
+        ""
+        )
+
+    else:
+
+        search=""
 
     students= requests.get(
 
@@ -353,6 +410,22 @@ def home():
     )
 
     )
+
+    if search:
+
+        students=[
+
+        s for s in students
+
+        if
+
+        search.lower() in s["name"].lower()
+
+        or
+
+        search.lower() in s["course"].lower()
+
+        ]
 
     total_students=len(students)
 
@@ -469,6 +542,8 @@ def home():
     "index.html",
 
     students=students,
+
+    search=search,
 
     total_students=total_students,
 
@@ -645,7 +720,261 @@ def add():
 
             conn.close()
 
-            return redirect("/")
+            return """
+
+            <html>
+
+            <head>
+
+            <style>
+
+            body{
+
+            margin:0;
+
+            background:
+
+            rgba(0,0,0,.65);
+
+            display:flex;
+
+            justify-content:center;
+
+            align-items:center;
+
+            height:100vh;
+
+            font-family:Arial;
+
+            overflow:hidden;
+
+            backdrop-filter:
+
+            blur(8px);
+
+            }
+
+            .popup{
+
+            background:
+
+            linear-gradient(
+
+            135deg,
+
+            #111a4b,
+
+            #171752
+
+            );
+
+            padding:40px;
+
+            border-radius:25px;
+
+            text-align:center;
+
+            width:340px;
+
+            box-shadow:
+
+            0 0 40px
+
+            #7c3aed;
+
+            animation:
+
+            popup .3s ease;
+
+            color:white;
+
+            }
+
+            h1{
+
+            margin:0;
+
+            font-size:34px;
+
+            }
+
+            p{
+
+            font-size:20px;
+
+            margin:
+
+            18px 0;
+
+            color:#d5d8ff;
+
+            }
+
+            .btns{
+
+            display:flex;
+
+            gap:15px;
+
+            justify-content:center;
+
+            margin-top:25px;
+
+            }
+
+            button{
+
+            border:none;
+
+            padding:
+
+            15px 28px;
+
+            font-size:18px;
+
+            font-weight:bold;
+
+            border-radius:14px;
+
+            cursor:pointer;
+
+            transition:.3s;
+
+            }
+
+            .add{
+
+            background:
+
+            linear-gradient(
+
+            90deg,
+
+            #7c3aed,
+
+            #3b82f6
+
+            );
+
+            color:white;
+
+            box-shadow:
+
+            0 0 18px
+
+            #7c3aed;
+
+            }
+
+            .home{
+
+            background:
+
+            #4a4a4a;
+
+            color:white;
+
+            }
+
+            button:hover{
+
+            transform:
+
+            scale(1.08);
+
+            }
+
+            @keyframes popup{
+
+            from{
+
+            opacity:0;
+
+            transform:
+
+            scale(.7);
+
+            }
+
+            to{
+
+            opacity:1;
+
+            transform:
+
+            scale(1);
+
+            }
+
+            }
+
+            </style>
+
+            </head>
+
+            <body>
+
+            <div class='popup'>
+
+            <h1>
+
+            ✅ Added
+
+            </h1>
+
+            <p>
+
+            Student added successfully
+
+            </p>
+
+            <p>
+
+            Add another student?
+
+            </p>
+
+            <div class='btns'>
+
+            <button
+
+            class='home'
+
+            onclick=
+
+            "location.href='/'"
+
+            >
+
+            Dashboard
+
+            </button>
+
+            <button
+
+            class='add'
+
+            onclick=
+
+            "location.href='/add'"
+
+            >
+
+            Add More
+
+            </button>
+
+            </div>
+
+            </div>
+
+            </body>
+
+            </html>
+
+            """
+
+            
 
         else:
 

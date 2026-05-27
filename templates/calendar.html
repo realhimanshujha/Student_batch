@@ -22,7 +22,26 @@ class="dashboard-btn">
 
 <hr>
 
+{% set today=
+{
+"Monday":"Monday",
+"Tuesday":"Tuesday",
+"Wednesday":"Wednesday",
+"Thursday":"Thursday",
+"Friday":"Friday",
+"Saturday":"Saturday"
+}[current_day]
+%}
+
 {% for day,students in days.items() %}
+
+<div
+
+class=
+
+"{% if day==today %}today-card{% endif %}"
+
+>
 
 <h2>
 
@@ -73,3 +92,5 @@ PC {{s.computer_no}}
 <br>
 
 {% endfor %}
+
+</div>

@@ -51,111 +51,221 @@ class="dropdown-menu">
 
 
 <div
-style="display:flex;
-gap:20px;">
+
+style="
+
+display:flex;
+
+align-items:center;
+
+justify-content:space-between;
+
+gap:20px;
+
+flex-wrap:wrap;
+
+"
+
+>
+
+<!-- LEFT SIDE -->
 
 <div
-style="border:1px solid black;
-padding:10px;">
+
+style="
+
+display:flex;
+
+gap:20px;
+
+align-items:center;
+
+"
+
+>
+
+<div class="stat-card">
 
 Total Students
 
-<h2>
-
-{{total_students}}
-
-</h2>
+<h2>{{total_students}}</h2>
 
 </div>
 
-<div
-style="border:1px solid black;
-padding:10px;">
+<div class="stat-card">
 
 Active Batches
 
-<h2>
-
-{{active_batches}}
-
-</h2>
+<h2>{{active_batches}}</h2>
 
 </div>
 
-<div
-style="border:1px solid black;
-padding:10px;">
+<div class="stat-card">
 
 MWF Seats
 
-<h2>
-
-{{mwf_left}}
-
-</h2>
+<h2>{{mwf_left}}</h2>
 
 </div>
 
-<div
-style="
-border:1px solid black;
-padding:10px;
-">
+<div class="stat-card">
 
 TTS Seats
 
-<h2>
-
-{{tts_left}}
-
-</h2>
+<h2>{{tts_left}}</h2>
 
 </div>
 
-<div
-style="
-border:1px solid black;
-padding:10px;
-">
+<div class="stat-card">
 
 Total Capacity
 
-<h2>
-
-{{total_left}}
-
-</h2>
+<h2>{{total_left}}</h2>
 
 </div>
 
 </div>
 
-<br>
 
+<!-- RIGHT SIDE SEARCH -->
 
-<form>
+<form
+
+method="POST"
+
+action="/"
+
+style="
+
+display:flex;
+
+align-items:center;
+
+gap:8px;
+
+"
+
+>
 
 <input
 
 name="search"
 
-placeholder=
+placeholder="Search Student"
 
-"Search Student / Course"
+value="{{search}}"
 
-value=
+style="
 
-"{{request.args.get('search','')}}"
+width:180px;
+
+height:44px;
+
+padding:0 18px;
+
+border:none;
+
+border-radius:16px;
+
+background:rgba(255,255,255,.08);
+
+color:white;
+
+"
 
 >
 
-<button>
+<button
 
-Search
+style="
+
+width:58px;
+
+height:44px;
+
+border:none;
+
+border-radius:16px;
+
+background:
+
+linear-gradient(
+
+135deg,
+
+#8b5cf6,
+
+#2563eb
+
+);
+
+display:flex;
+
+align-items:center;
+
+justify-content:center;
+
+padding:0;
+
+margin:0;
+
+line-height:1;
+
+box-sizing:border-box;
+
+cursor:pointer;
+
+position:relative;
+
+top:-1px;
+
+"
+
+>
+
+🔍
 
 </button>
 
+
+<a
+
+href="/"
+
+style="
+
+width:44px;
+
+height:44px;
+
+display:flex;
+
+align-items:center;
+
+justify-content:center;
+
+background:#ff3b5c;
+
+border-radius:16px;
+
+text-decoration:none;
+
+font-size:20px;
+
+color:white;
+
+"
+
+>
+
+✖
+
+</a>
+
 </form>
+
+
+</div>
 
 <br>
 
@@ -473,10 +583,54 @@ document.getElementById(
 "dropdown"
 )
 
+menu.style.display=
+
+menu.style.display=="block"
+
+?
+
+"none"
+
+:
+
+"block"
+
+}
+
+
+document.addEventListener(
+
+"click",
+
+function(event){
+
+let menu=
+
+document.getElementById(
+"dropdown"
+)
+
+let button=
+
+document.querySelector(
+".menu-btn"
+)
+
 if(
 
-menu.style.display
-=="block"
+!menu.contains(
+
+event.target
+
+)
+
+&&
+
+!button.contains(
+
+event.target
+
+)
 
 ){
 
@@ -486,15 +640,9 @@ menu.style.display=
 
 }
 
-else{
-
-menu.style.display=
-
-"block"
-
 }
 
-}
+)
 
 </script>
 
