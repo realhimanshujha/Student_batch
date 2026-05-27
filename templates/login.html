@@ -1,43 +1,60 @@
 <link
 rel="stylesheet"
+href="{{url_for('static',filename='style.css')}}"
+>
 
-href="{{url_for(
-'static',
-filename='style.css'
-)}}">
+<div class="login-page">
 
-<div class="page-center">
-
-<div class="student-card">
+<div class="login-left">
 
 <h1>
 
-Vista Educare Login
+Vista Educare
 
 </h1>
 
+<p>
+
+Student Batch Management System
+
+</p>
+
+<div class="features">
+
+<div>📚 Batch Management</div>
+
+<div>💻 PC Allocation</div>
+
+<div>📅 Calendar System</div>
+
+<div>📊 Dashboard Analytics</div>
+
+</div>
+
+</div>
+
+<div class="login-box">
+
+<h2>
+
+Login
+
+</h2>
+
 <form method="POST">
-
-<label>
-
-Username
-
-</label>
 
 <input
 name="username"
-required>
-
-<label>
-
-Password
-
-</label>
+placeholder="Username"
+required
+>
 
 <input
 type="password"
 name="password"
-required>
+placeholder="Password"
+required
+>
 
 <button>
 
@@ -47,11 +64,15 @@ Login
 
 </form>
 
-<p>
+{% if error %}
+
+<p class="error">
 
 {{error}}
 
 </p>
+
+{% endif %}
 
 </div>
 
