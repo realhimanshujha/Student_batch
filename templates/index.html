@@ -236,8 +236,10 @@ href="/edit/{{s.id}}">
 </a>
 
 <a
+href="#"
 class="delete-btn"
-href="/delete/{{s.id}}">
+onclick="confirmDelete(event,'{{s.id}}','{{s.name}}')"
+>
 
 🗑 Delete
 
@@ -323,8 +325,10 @@ href="/edit/{{s.id}}">
 </a>
 
 <a
+href="#"
 class="delete-btn"
-href="/delete/{{s.id}}">
+onclick="confirmDelete(event,'{{s.id}}','{{s.name}}')"
+>
 
 🗑 Delete
 
@@ -404,8 +408,10 @@ href="/edit/{{s.id}}">
 </a>
 
 <a
+href="#"
 class="delete-btn"
-href="/delete/{{s.id}}">
+onclick="confirmDelete(event,'{{s.id}}','{{s.name}}')"
+>
 
 🗑 Delete
 
@@ -422,6 +428,38 @@ href="/delete/{{s.id}}">
 {% endfor %}
 
 </table>
+
+</div>
+
+<div id="deleteModal" class="modal">
+
+<div class="modal-box">
+
+<h2>⚠ Confirm Delete</h2>
+
+<p id="studentText"></p>
+
+<div class="modal-buttons">
+
+<button
+class="cancel-btn"
+onclick="closeModal()">
+
+Cancel
+
+</button>
+
+<button
+class="confirm-btn"
+id="deleteLink">
+
+Delete
+
+</button>
+
+</div>
+
+</div>
 
 </div>
 
@@ -455,6 +493,53 @@ menu.style.display=
 "block"
 
 }
+
+}
+
+</script>
+
+
+<script>
+
+function confirmDelete(e,id,name){
+
+e.preventDefault()
+
+document.getElementById(
+
+"studentText"
+
+).innerHTML=
+
+"Delete <b>"+name+
+
+"</b>?<br><br>This cannot be undone."
+
+document.getElementById(
+
+"deleteLink"
+
+).onclick=function(){
+
+window.location="/delete/"+id
+
+}
+
+document.getElementById(
+
+"deleteModal"
+
+).style.display="flex"
+
+}
+
+function closeModal(){
+
+document.getElementById(
+
+"deleteModal"
+
+).style.display="none"
 
 }
 

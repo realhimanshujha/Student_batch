@@ -2,6 +2,34 @@
 rel="stylesheet"
 href="{{url_for('static',filename='style.css')}}"
 >
+<body>
+    
+    <style>
+        
+        input{
+
+            color:#111827 !important;
+
+font-weight:600;
+
+}
+
+input::placeholder{
+
+color:#6b7280 !important;
+
+opacity:1;
+
+}
+
+input:focus{
+    
+    color:#000 !important;
+    
+}
+
+</style>
+</body>
 
 <div class="login-page">
 
@@ -49,12 +77,37 @@ placeholder="Username"
 required
 >
 
+<div class="password-wrapper">
+
 <input
 type="password"
 name="password"
+id="password"
 placeholder="Password"
-required
->
+required>
+
+<span
+class="toggle-pass"
+onclick="togglePassword()">
+
+<span
+id="eye-open">
+
+👁️
+
+</span>
+
+<span
+id="eye-close"
+style="display:none;">
+
+🙈
+
+</span>
+
+</span>
+
+</div>
 
 <button>
 
@@ -77,3 +130,61 @@ Login
 </div>
 
 </div>
+
+<script>
+
+function togglePassword(){
+
+let pass=
+
+document.getElementById(
+"password"
+)
+
+let openEye=
+
+document.getElementById(
+"eye-open"
+)
+
+let closeEye=
+
+document.getElementById(
+"eye-close"
+)
+
+if(
+
+pass.type==="password"
+
+){
+
+pass.type="text"
+
+openEye.style.display=
+
+"none"
+
+closeEye.style.display=
+
+"inline"
+
+}
+
+else{
+
+pass.type="password"
+
+openEye.style.display=
+
+"inline"
+
+closeEye.style.display=
+
+"none"
+
+}
+
+}
+
+</script>
