@@ -278,6 +278,8 @@ def calendar():
 
     )
 
+    all_students = students.copy()
+
     days={
 
     "Monday":[],
@@ -294,7 +296,7 @@ def calendar():
 
     }
 
-    for s in students:
+    for s in all_students:
 
         student_days=[
 
@@ -363,7 +365,7 @@ def home():
 
         search=""
 
-    students= requests.get(
+    students=requests.get(
 
     SHEET_API
 
@@ -411,29 +413,7 @@ def home():
 
     )
 
-    if search:
-
-        students=[
-
-        s for s in students
-
-        if
-
-        search.lower() in s["name"].lower()
-
-        or
-
-        search.lower() in s["course"].lower()
-
-        ]
-
-    total_students=len(students)
-
-    mwf_capacity=35
-    tts_capacity=35
-
-    mwf_used=0
-    tts_used=0
+    all_students = students.copy()
 
     day_order = {
 
@@ -446,9 +426,9 @@ def home():
 
     }
 
-    students_fixed=[]
+    all_students_fixed=[]
 
-    for s in students:
+    for s in all_students:
 
         row=dict(s)
 
@@ -476,11 +456,39 @@ def home():
 
             row["days"]=", ".join(items)
 
-        students_fixed.append(row)
+        all_students_fixed.append(row)
 
-    students=students_fixed
+    all_students = all_students_fixed
 
-    for s in students:
+    if search:
+
+        students=[
+
+        s for s in all_students
+
+        if
+
+        search.lower() in s["name"].lower()
+
+        or
+
+        search.lower() in s["course"].lower()
+
+        ]
+
+    else:
+
+        students = all_students
+
+    total_students=len(all_students)
+
+    mwf_capacity=35
+    tts_capacity=35
+
+    mwf_used=0
+    tts_used=0
+
+    for s in all_students:
 
         days=s["days"]
 
@@ -518,7 +526,6 @@ def home():
 
                 tts_used += 1
 
-
     mwf_left = mwf_capacity - mwf_used
 
     tts_left = tts_capacity - tts_used
@@ -531,7 +538,7 @@ def home():
 
     s["batch_time"]
 
-    for s in students
+    for s in all_students
 
     )
 
@@ -665,6 +672,32 @@ def edit(id):
         }
 
         return redirect("/")
+    
+    used_pcs=[]
+
+    for s in students:
+
+        if(
+            s["Batch"]==student["Batch"]
+            and
+            s["row"]!=student["row"]
+        ):
+
+            used_pcs.append(
+                int(s["PC"])
+            )
+
+    occupied=[]
+
+    for s in students:
+
+        occupied.append({
+
+            "batch":s["Batch"],
+            "days":s["Days"],
+            "pc":int(s["PC"])
+
+        })
 
     return render_template(
 
@@ -689,6 +722,10 @@ def edit(id):
     student["PC"]
 
     },
+
+    occupied=occupied,
+
+    used_pcs=used_pcs,
 
     current=current,
 

@@ -61,8 +61,7 @@ selected
 
 PC
 
-<select
-name="pc">
+<select name="pc" id="pc-select">
 
 {% for x in range(1,6) %}
 
@@ -70,14 +69,21 @@ name="pc">
 value="{{x}}"
 
 {% if x==student.computer_no %}
-
 selected
+{% endif %}
 
+{% if x in used_pcs %}
+disabled
+style="color:gray;background:#222;"
 {% endif %}
 
 >
 
 PC {{x}}
+
+{% if x in used_pcs %}
+(Occupied)
+{% endif %}
 
 </option>
 
@@ -185,6 +191,159 @@ document
 .value=
 
 "Monday,Tuesday,Wednesday,Thursday,Friday,Saturday"
+
+}
+
+const occupiedData = {{ occupied|tojson }}
+
+function updatePCs(){
+
+    let selectedBatch =
+    document.querySelector(
+    'select[name="batch"]'
+    ).value
+
+    let selectedDays =
+    document.getElementById(
+    "days"
+    ).value
+
+    let pcSelect =
+    document.getElementById(
+    "pc-select"
+    )
+
+    let currentPC =
+    parseInt("{{student.computer_no}}")
+
+    let originalBatch =
+    "{{student.batch_time}}"
+
+    let originalDays =
+    "{{current|join(',')}}"
+
+    let isOriginalSlot =
+
+    selectedBatch === originalBatch
+    &&
+    selectedDays === originalDays
+
+    let selectedDayArray =
+    selectedDays.split(",")
+
+    for(let option of pcSelect.options){
+
+        let pc =
+        parseInt(option.value)
+
+        option.disabled = false
+
+        option.innerText =
+        "PC "+pc
+
+        let occupied =
+        occupiedData.some(s=>{
+
+            let studentDays =
+            s.days.split(",")
+
+            let sameDay =
+            selectedDayArray.some(day=>
+                studentDays.includes(day)
+            )
+
+            return (
+
+                s.batch === selectedBatch
+                &&
+                sameDay
+                &&
+                s.pc === pc
+                &&
+                !(
+
+                    pc === currentPC
+                    &&
+                    isOriginalSlot
+
+                )
+
+            )
+
+        })
+
+        if(
+
+            pc === currentPC
+            &&
+            isOriginalSlot
+
+        ){
+
+            option.innerText =
+            "PC "+pc+" (Current)"
+
+        }
+
+        if(occupied){
+
+            option.innerText =
+            "PC "+pc+" (Occupied)"
+
+            option.disabled = true
+
+        }
+
+    }
+
+}
+
+function setMWF(){
+
+document.getElementById(
+"days"
+).value=
+
+"Monday,Wednesday,Friday"
+
+updatePCs()
+
+}
+
+function setTTS(){
+
+document.getElementById(
+"days"
+).value=
+
+"Tuesday,Thursday,Saturday"
+
+updatePCs()
+
+}
+
+function setDaily(){
+
+document.getElementById(
+"days"
+).value=
+
+"Monday,Tuesday,Wednesday,Thursday,Friday,Saturday"
+
+updatePCs()
+
+}
+
+document.querySelector(
+'select[name="batch"]'
+).addEventListener(
+"change",
+updatePCs
+)
+
+window.onload=function(){
+
+updatePCs()
 
 }
 
